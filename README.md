@@ -35,23 +35,22 @@ working, because there is still a text field.
 - **Themeable** — every colour, size and timing is a CSS custom property
 - **Zero dependencies** — ~4 KB brotli, no framework
 
-## Install
+## Add it to a page
 
-```bash
-npm install input-otp-zero
-```
-
-Two things: the script, and the theme in your HTML.
+Two tags. No build step, no bundler, nothing to install.
 
 ```html
-<link rel="stylesheet" href="/input-otp-zero.css">
-<script type="module" src="/input-otp-zero.esm.js"></script>
+<link rel="stylesheet" href="https://esm.sh/input-otp-zero/dist/input-otp-zero.css">
+<script type="module" src="https://esm.sh/input-otp-zero"></script>
 ```
+
+Pin a version for production — `https://esm.sh/input-otp-zero@0.1.0` — so a
+release can't change under you.
 
 The script defines `<input-otp>` and injects the rules that make one text field
 behave like six boxes — that part is machinery, and it is never optional. The
-theme is `dist/input-otp-zero.css`: link it, paste it into a `<style>` tag, or
-fold it into your own stylesheet. It is plain CSS with no build step of its own.
+theme is the stylesheet: link it, paste it into a `<style>` tag, or fold it into
+your own. It is plain CSS.
 
 The machinery's `<style>` tag goes first in `<head>`, so both the theme and your
 own CSS come later in the cascade and win a specificity tie — you never have to
@@ -277,8 +276,12 @@ import {
   REGEXP_ONLY_DIGITS,
   REGEXP_ONLY_CHARS,
   REGEXP_ONLY_DIGITS_AND_CHARS
-} from "input-otp-zero"
+} from "https://esm.sh/input-otp-zero"
 ```
+
+The part classes — `InputOtpGroupElement`, `InputOtpCharElement`,
+`InputOtpCaretElement` and `InputOtpSeparatorElement` — are exported too, though
+you rarely need them.
 
 ## Development
 

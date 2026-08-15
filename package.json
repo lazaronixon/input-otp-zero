@@ -8,6 +8,7 @@
     ".": "./dist/input-otp-zero.esm.js",
     "./styles": "./dist/input-otp-zero.css",
     "./input-otp-zero.css": "./dist/input-otp-zero.css",
+    "./dist/input-otp-zero.css": "./dist/input-otp-zero.css",
     "./package.json": "./package.json"
   },
   "files": [
