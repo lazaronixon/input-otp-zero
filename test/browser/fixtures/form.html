@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>input-otp-zero — form</title>
+    <link rel="stylesheet" href="/input-otp-zero.css">
+    <script type="module" src="/setup.js"></script>
+    <script type="module">
+      globalThis.submittedCode = null
+
+      document.querySelector("form").addEventListener("submit", event => {
+        event.preventDefault()
+        globalThis.submittedCode = new FormData(event.target).get("code")
+      })
+
+      document.querySelector("input-otp").addEventListener("input-otp:complete", event => {
+        event.target.closest("form").requestSubmit()
+      })
+    </script>
+  </head>
+  <body>
+    <form>
+      <input-otp maxlength="4" pattern="digits" name="code" placeholder="····"></input-otp>
+      <button type="submit">Verify</button>
+    </form>
+  </body>
+</html>

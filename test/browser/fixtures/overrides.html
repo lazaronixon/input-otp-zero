@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>input-otp-zero — overrides</title>
+    <link rel="stylesheet" href="/input-otp-zero.css">
+    <script type="module" src="/setup.js"></script>
+    <style>
+      #overridden [data-input-otp-slot] {
+        border-color: rgb(255, 0, 255);
+      }
+
+      /* Same specificity as the machinery's own `input-otp` rule, and later in
+         the cascade, which is the whole point of where that tag is injected. */
+      #overridden {
+        display: inline-grid;
+      }
+    </style>
+  </head>
+  <body>
+    <input-otp id="plain" maxlength="4"></input-otp>
+    <input-otp id="overridden" maxlength="4"></input-otp>
+  </body>
+</html>

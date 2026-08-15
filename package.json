@@ -1,0 +1,63 @@
+{
+  "name": "input-otp-zero",
+  "version": "0.1.0",
+  "description": "input-otp-zero - One invisible input, any UI you can imagine. A zero-dependency one-time-password custom element, themed with CSS variables.",
+  "module": "dist/input-otp-zero.esm.js",
+  "type": "module",
+  "exports": {
+    ".": "./dist/input-otp-zero.esm.js",
+    "./styles": "./dist/input-otp-zero.css",
+    "./input-otp-zero.css": "./dist/input-otp-zero.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": "https://github.com/lazaroamaral/input-otp-zero.git",
+  "license": "MIT",
+  "keywords": [
+    "otp",
+    "one-time-password",
+    "input",
+    "custom-element",
+    "web-component",
+    "vanilla",
+    "accessible"
+  ],
+  "browserslist": [
+    "baseline 2023",
+    "not dead"
+  ],
+  "devDependencies": {
+    "@eslint/css": "^1.2.0",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.52.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "eslint": "^10.3.0",
+    "eslint-plugin-compat": "^7.0.2",
+    "globals": "^17.6.0",
+    "jsdom": "^27.3.0",
+    "rollup": "^4.44.1",
+    "rollup-plugin-copy": "^3.5.0",
+    "rollup-plugin-gzip": "^4.1.1",
+    "vite": "^7.3.1",
+    "vitest": "^4.0.16"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -wc",
+    "lint": "eslint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:browser": "npx playwright test --config test/browser/playwright.config.js",
+    "test:browser:chromium": "npx playwright test --config test/browser/playwright.config.js --project=chromium",
+    "test:browser:firefox": "npx playwright test --config test/browser/playwright.config.js --project=firefox",
+    "test:browser:webkit": "npx playwright test --config test/browser/playwright.config.js --project=webkit",
+    "test:browser:headed": "npx playwright test --config test/browser/playwright.config.js --headed",
+    "test:browser:debug": "npx playwright test --config test/browser/playwright.config.js --debug",
+    "playground": "vite --config test/browser/vite.config.js",
+    "prerelease": "yarn build",
+    "release": "yarn build && yarn publish",
+    "release:alpha": "yarn build && yarn publish --tag alpha"
+  }
+}

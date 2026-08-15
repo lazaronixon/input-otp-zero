@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>input-otp-zero — playground</title>
+    <link rel="stylesheet" href="/input-otp-zero.css">
+    <script type="module" src="/setup.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 3rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+        align-items: flex-start;
+        font-family: system-ui, sans-serif;
+        color: var(--input-otp-color);
+        background: light-dark(#fafafa, #18181b);
+      }
+
+      html { color-scheme: light dark; }
+      h2 { margin: 0 0 0.75rem; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.6; }
+
+      .stripe {
+        --input-otp-slot-radius: 0.375rem;
+        --input-otp-slot-width: 3rem;
+        --input-otp-border-color-active: #635bff;
+        --input-otp-ring-color: rgb(99 91 255 / 0.4);
+        --input-otp-ring-width: 4px;
+        --input-otp-caret-color: #635bff;
+      }
+    </style>
+  </head>
+  <body>
+    <section>
+      <h2>Default</h2>
+      <input-otp maxlength="6" pattern="digits" placeholder="000000"></input-otp>
+    </section>
+
+    <section>
+      <h2>Grouped, Stripe-style</h2>
+      <div class="stripe">
+        <input-otp pattern="digits">
+          <div data-input-otp-group>
+            <div data-input-otp-slot></div>
+            <div data-input-otp-slot></div>
+            <div data-input-otp-slot></div>
+          </div>
+          <div data-input-otp-separator></div>
+          <div data-input-otp-group>
+            <div data-input-otp-slot></div>
+            <div data-input-otp-slot></div>
+            <div data-input-otp-slot></div>
+          </div>
+        </input-otp>
+      </div>
+    </section>
+
+    <section>
+      <h2>Seamless</h2>
+      <input-otp appearance="seamless" maxlength="6" pattern="digits"></input-otp>
+    </section>
+
+    <section>
+      <h2>Disabled</h2>
+      <input-otp maxlength="6" value="042042" disabled></input-otp>
+    </section>
+  </body>
+</html>

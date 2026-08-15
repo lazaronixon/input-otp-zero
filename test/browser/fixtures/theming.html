@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>input-otp-zero — theming</title>
+    <link rel="stylesheet" href="/input-otp-zero.css">
+    <script type="module" src="/setup.js"></script>
+    <style>
+      .brand {
+        --input-otp-slot-width: 4rem;
+        --input-otp-slot-height: 5rem;
+        --input-otp-slot-radius: 1rem;
+        --input-otp-border-color: rgb(0, 0, 255);
+        --input-otp-border-color-active: rgb(255, 0, 0);
+        --input-otp-caret-color: rgb(0, 128, 0);
+        --input-otp-caret-width: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <input-otp id="default" maxlength="3"></input-otp>
+
+    <div class="brand">
+      <input-otp id="themed" maxlength="3"></input-otp>
+    </div>
+
+    <input-otp id="inline" maxlength="3" style="--input-otp-slot-width: 6rem;"></input-otp>
+  </body>
+</html>

@@ -1,0 +1,211 @@
+/*
+ * input-otp-zero — default theme.
+ *
+ * Every value below is a custom property with a fallback, so nothing here has to
+ * be overridden with more specific selectors. Redefine the properties wherever
+ * you like — on `:root`, on a container, or on a single `input-otp` — and the
+ * component follows.
+ */
+
+:root {
+  --input-otp-gap: 0.5rem;
+  --input-otp-group-gap: 0.75rem;
+
+  --input-otp-slot-width: 2.75rem;
+  --input-otp-slot-height: 3.5rem;
+  --input-otp-slot-radius: 0.5rem;
+  --input-otp-slot-background: #ffffff;
+  --input-otp-slot-background-active: #ffffff;
+
+  --input-otp-border-width: 1px;
+  --input-otp-border-color: #d4d4d8;
+  --input-otp-border-color-active: #18181b;
+
+  --input-otp-ring-width: 2px;
+  --input-otp-ring-color: rgb(24 24 27 / 0.75);
+  --input-otp-ring-offset: 0px;
+
+  --input-otp-color: #18181b;
+  --input-otp-placeholder-color: #a1a1aa;
+  --input-otp-font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  --input-otp-font-size: 1.375rem;
+  --input-otp-font-weight: 500;
+
+  --input-otp-caret-color: #18181b;
+  --input-otp-caret-width: 1px;
+  --input-otp-caret-height: 2rem;
+  --input-otp-caret-blink-duration: 1s;
+
+  --input-otp-separator-color: #a1a1aa;
+  --input-otp-separator-width: 1.5rem;
+  --input-otp-separator-thickness: 2px;
+
+  --input-otp-transition-duration: 150ms;
+  --input-otp-transition-easing: ease-out;
+  --input-otp-disabled-opacity: 0.5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --input-otp-slot-background: #09090b;
+    --input-otp-slot-background-active: #09090b;
+    --input-otp-border-color: #3f3f46;
+    --input-otp-border-color-active: #fafafa;
+    --input-otp-ring-color: rgb(250 250 250 / 0.75);
+    --input-otp-color: #fafafa;
+    --input-otp-placeholder-color: #52525b;
+    --input-otp-caret-color: #fafafa;
+    --input-otp-separator-color: #52525b;
+  }
+}
+
+:root[data-theme="dark"] {
+  --input-otp-slot-background: #09090b;
+  --input-otp-slot-background-active: #09090b;
+  --input-otp-border-color: #3f3f46;
+  --input-otp-border-color-active: #fafafa;
+  --input-otp-ring-color: rgb(250 250 250 / 0.75);
+  --input-otp-color: #fafafa;
+  --input-otp-placeholder-color: #52525b;
+  --input-otp-caret-color: #fafafa;
+  --input-otp-separator-color: #52525b;
+}
+
+input-otp {
+  gap: var(--input-otp-group-gap, 0.75rem);
+}
+
+input-otp[data-disabled] {
+  opacity: var(--input-otp-disabled-opacity, 0.5);
+}
+
+/* Before the element is upgraded — and forever, if JavaScript never runs — the
+   inner input is a perfectly usable plain text field. */
+input-otp:not(:defined) input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  color: var(--input-otp-color, #18181b);
+  background: var(--input-otp-slot-background, #ffffff);
+  border: var(--input-otp-border-width, 1px) solid var(--input-otp-border-color, #d4d4d8);
+  border-radius: var(--input-otp-slot-radius, 0.5rem);
+  font-family: var(--input-otp-font-family, monospace);
+  font-size: var(--input-otp-font-size, 1.375rem);
+  letter-spacing: 0.25em;
+  text-align: center;
+}
+
+[data-input-otp-slots],
+[data-input-otp-group] {
+  display: flex;
+  align-items: center;
+  gap: var(--input-otp-gap, 0.5rem);
+}
+
+[data-input-otp-slot] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--input-otp-slot-width, 2.75rem);
+  height: var(--input-otp-slot-height, 3.5rem);
+  color: var(--input-otp-color, #18181b);
+  background: var(--input-otp-slot-background, #ffffff);
+  border: var(--input-otp-border-width, 1px) solid var(--input-otp-border-color, #d4d4d8);
+  border-radius: var(--input-otp-slot-radius, 0.5rem);
+  font-family: var(--input-otp-font-family, monospace);
+  font-size: var(--input-otp-font-size, 1.375rem);
+  font-weight: var(--input-otp-font-weight, 500);
+  font-variant-numeric: tabular-nums;
+  transition:
+    color var(--input-otp-transition-duration, 150ms) var(--input-otp-transition-easing, ease-out),
+    background-color var(--input-otp-transition-duration, 150ms) var(--input-otp-transition-easing, ease-out),
+    border-color var(--input-otp-transition-duration, 150ms) var(--input-otp-transition-easing, ease-out),
+    box-shadow var(--input-otp-transition-duration, 150ms) var(--input-otp-transition-easing, ease-out);
+}
+
+[data-input-otp-slot][data-active] {
+  z-index: 10;
+  background: var(--input-otp-slot-background-active, #ffffff);
+  border-color: var(--input-otp-border-color-active, #18181b);
+  box-shadow:
+    0 0 0 var(--input-otp-ring-offset, 0px) var(--input-otp-slot-background-active, #ffffff),
+    0 0 0 calc(var(--input-otp-ring-offset, 0px) + var(--input-otp-ring-width, 2px)) var(--input-otp-ring-color, rgb(24 24 27 / 0.75));
+}
+
+[data-input-otp-slot][data-placeholder] {
+  color: var(--input-otp-placeholder-color, #a1a1aa);
+}
+
+[data-input-otp-caret] {
+  display: none;
+  position: absolute;
+  width: var(--input-otp-caret-width, 1px);
+  height: var(--input-otp-caret-height, 2rem);
+  background: var(--input-otp-caret-color, #18181b);
+}
+
+[data-input-otp-caret][data-visible] {
+  display: block;
+  animation: input-otp-caret-blink var(--input-otp-caret-blink-duration, 1s) step-end infinite;
+}
+
+[data-input-otp-separator] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--input-otp-separator-width, 1.5rem);
+  color: var(--input-otp-separator-color, #a1a1aa);
+}
+
+/* A bare `<div data-input-otp-separator></div>` draws the Stripe-style dash. */
+[data-input-otp-separator]:empty::before {
+  content: "";
+  width: 50%;
+  height: var(--input-otp-separator-thickness, 2px);
+  border-radius: 999px;
+  background: currentcolor;
+}
+
+/* Seamless variant: one continuous box with dividers between the slots. */
+input-otp[appearance="seamless"] [data-input-otp-slots],
+input-otp[appearance="seamless"] [data-input-otp-group] {
+  gap: 0;
+}
+
+input-otp[appearance="seamless"] [data-input-otp-slot] {
+  border-radius: 0;
+  border-left-width: 0;
+}
+
+input-otp[appearance="seamless"] [data-input-otp-slot]:first-child {
+  border-left-width: var(--input-otp-border-width, 1px);
+  border-start-start-radius: var(--input-otp-slot-radius, 0.5rem);
+  border-end-start-radius: var(--input-otp-slot-radius, 0.5rem);
+}
+
+input-otp[appearance="seamless"] [data-input-otp-slot]:last-child {
+  border-start-end-radius: var(--input-otp-slot-radius, 0.5rem);
+  border-end-end-radius: var(--input-otp-slot-radius, 0.5rem);
+}
+
+@keyframes input-otp-caret-blink {
+  0%,
+  70% {
+    opacity: 1;
+  }
+
+  71%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-input-otp-slot] {
+    transition: none;
+  }
+
+  [data-input-otp-caret][data-visible] {
+    animation: none;
+  }
+}
