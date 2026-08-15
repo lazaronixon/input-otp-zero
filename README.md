@@ -76,36 +76,44 @@ otherwise one is created for you.
 ### Composing your own slots
 
 Write the slot markup yourself and it is adopted as-is — grouped, separated,
-with whatever classes you like. Any `[data-input-otp-slot]` element inside the
-component becomes a slot, and the slot count comes from the markup:
+with whatever classes you like. Every `<input-otp-slot>` inside the component
+becomes a slot, and the slot count comes from the markup:
 
 ```html
 <input-otp pattern="digits">
-  <div data-input-otp-group>
-    <div data-input-otp-slot></div>
-    <div data-input-otp-slot></div>
-    <div data-input-otp-slot></div>
-  </div>
+  <input-otp-group>
+    <input-otp-slot></input-otp-slot>
+    <input-otp-slot></input-otp-slot>
+    <input-otp-slot></input-otp-slot>
+  </input-otp-group>
 
-  <div data-input-otp-separator></div>
+  <input-otp-separator></input-otp-separator>
 
-  <div data-input-otp-group>
-    <div data-input-otp-slot></div>
-    <div data-input-otp-slot></div>
-    <div data-input-otp-slot></div>
-  </div>
+  <input-otp-group>
+    <input-otp-slot></input-otp-slot>
+    <input-otp-slot></input-otp-slot>
+    <input-otp-slot></input-otp-slot>
+  </input-otp-group>
 </input-otp>
 ```
 
-Each slot is painted with data attributes and two child elements, which are
-created for you if they are missing:
+A slot fills in its own two children and paints its state onto itself:
 
 ```html
-<div data-input-otp-slot data-active data-filled>
-  <span data-input-otp-char>4</span>
-  <span data-input-otp-caret data-visible></span>
-</div>
+<input-otp-slot data-active data-filled>
+  <input-otp-char>4</input-otp-char>
+  <input-otp-caret data-visible></input-otp-caret>
+</input-otp-slot>
 ```
+
+The split is deliberate: attributes you write are bare (`maxlength`, `pattern`,
+`appearance`), and anything the script writes is `data-*`. So a selector always
+tells you whether you are matching configuration or state.
+
+Because the parts are elements rather than attributes, styling them costs the
+lowest specificity there is — `input-otp-slot` is `0,0,1`, where
+`[data-input-otp-slot]` would have been `0,1,0`. A single class of your own beats
+the whole theme.
 
 ### Reacting to the value
 
@@ -235,7 +243,21 @@ behave like six boxes — and the fix for each:
 | `input-otp:complete` | `detail: { value }` — bubbles, once on the transition to full |
 | `input-otp:render` | `detail: { slots }` — after each repaint |
 
-### Data attributes
+### Elements
+
+| | |
+| --- | --- |
+| `<input-otp>` | the component |
+| `<input-otp-group>` | a row of slots; generated for you when you don't write one |
+| `<input-otp-slot>` | one slot |
+| `<input-otp-char>` | the character inside a slot, filled in for you |
+| `<input-otp-caret>` | the fake caret inside a slot, filled in for you |
+| `<input-otp-separator>` | the dash between groups |
+| `<input data-input-otp>` | the real field — a native input, so it stays an attribute |
+
+### State attributes
+
+Written by the script, never by you.
 
 On the component: `data-focused`, `data-hovering`, `data-disabled`,
 `data-complete`, `data-empty`.
@@ -248,6 +270,7 @@ On a slot: `data-active`, `data-filled`, `data-placeholder`. On its caret:
 ```js
 import {
   InputOtpElement,
+  InputOtpSlotElement,
   defineElements,
   computeSlots,
   resolvePattern,

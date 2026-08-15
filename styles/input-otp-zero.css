@@ -94,14 +94,13 @@ input-otp:not(:defined) input {
   text-align: center;
 }
 
-[data-input-otp-slots],
-[data-input-otp-group] {
+input-otp-group {
   display: flex;
   align-items: center;
   gap: var(--input-otp-gap, 0.5rem);
 }
 
-[data-input-otp-slot] {
+input-otp-slot {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -123,7 +122,7 @@ input-otp:not(:defined) input {
     box-shadow var(--input-otp-transition-duration, 150ms) var(--input-otp-transition-easing, ease-out);
 }
 
-[data-input-otp-slot][data-active] {
+input-otp-slot[data-active] {
   z-index: 10;
   background: var(--input-otp-slot-background-active, #ffffff);
   border-color: var(--input-otp-border-color-active, #18181b);
@@ -132,11 +131,11 @@ input-otp:not(:defined) input {
     0 0 0 calc(var(--input-otp-ring-offset, 0px) + var(--input-otp-ring-width, 2px)) var(--input-otp-ring-color, rgb(24 24 27 / 0.75));
 }
 
-[data-input-otp-slot][data-placeholder] {
+input-otp-slot[data-placeholder] {
   color: var(--input-otp-placeholder-color, #a1a1aa);
 }
 
-[data-input-otp-caret] {
+input-otp-caret {
   display: none;
   position: absolute;
   width: var(--input-otp-caret-width, 1px);
@@ -144,12 +143,12 @@ input-otp:not(:defined) input {
   background: var(--input-otp-caret-color, #18181b);
 }
 
-[data-input-otp-caret][data-visible] {
+input-otp-caret[data-visible] {
   display: block;
   animation: input-otp-caret-blink var(--input-otp-caret-blink-duration, 1s) step-end infinite;
 }
 
-[data-input-otp-separator] {
+input-otp-separator {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -157,8 +156,8 @@ input-otp:not(:defined) input {
   color: var(--input-otp-separator-color, #a1a1aa);
 }
 
-/* A bare `<div data-input-otp-separator></div>` draws the Stripe-style dash. */
-[data-input-otp-separator]:empty::before {
+/* A bare `<input-otp-separator></input-otp-separator>` draws the Stripe-style dash. */
+input-otp-separator:empty::before {
   content: "";
   width: 50%;
   height: var(--input-otp-separator-thickness, 2px);
@@ -167,23 +166,22 @@ input-otp:not(:defined) input {
 }
 
 /* Seamless variant: one continuous box with dividers between the slots. */
-input-otp[appearance="seamless"] [data-input-otp-slots],
-input-otp[appearance="seamless"] [data-input-otp-group] {
+input-otp[appearance="seamless"] input-otp-group {
   gap: 0;
 }
 
-input-otp[appearance="seamless"] [data-input-otp-slot] {
+input-otp[appearance="seamless"] input-otp-slot {
   border-radius: 0;
   border-left-width: 0;
 }
 
-input-otp[appearance="seamless"] [data-input-otp-slot]:first-child {
+input-otp[appearance="seamless"] input-otp-slot:first-child {
   border-left-width: var(--input-otp-border-width, 1px);
   border-start-start-radius: var(--input-otp-slot-radius, 0.5rem);
   border-end-start-radius: var(--input-otp-slot-radius, 0.5rem);
 }
 
-input-otp[appearance="seamless"] [data-input-otp-slot]:last-child {
+input-otp[appearance="seamless"] input-otp-slot:last-child {
   border-start-end-radius: var(--input-otp-slot-radius, 0.5rem);
   border-end-end-radius: var(--input-otp-slot-radius, 0.5rem);
 }
@@ -201,11 +199,11 @@ input-otp[appearance="seamless"] [data-input-otp-slot]:last-child {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-input-otp-slot] {
+  input-otp-slot {
     transition: none;
   }
 
-  [data-input-otp-caret][data-visible] {
+  input-otp-caret[data-visible] {
     animation: none;
   }
 }

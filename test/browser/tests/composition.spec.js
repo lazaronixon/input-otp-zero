@@ -4,8 +4,9 @@ test("adopts hand-written grouped markup", async ({ page, otp }) => {
   await page.goto("/groups.html")
 
   await expect(otp.slots).toHaveCount(6)
-  await expect(otp.element.locator("[data-input-otp-separator]")).toHaveCount(1)
-  await expect(otp.element.locator("[data-input-otp-slots]")).toHaveCount(0)
+  await expect(otp.element.locator("input-otp-separator")).toHaveCount(1)
+  // The two groups are the ones in the fixture — none was generated.
+  await expect(otp.element.locator("input-otp-group")).toHaveCount(2)
 })
 
 test("types across groups as one continuous field", async ({ page, otp }) => {
@@ -21,7 +22,7 @@ test("types across groups as one continuous field", async ({ page, otp }) => {
 test("draws the separator between the two groups", async ({ page, otp }) => {
   await page.goto("/groups.html")
 
-  const separator = otp.element.locator("[data-input-otp-separator]")
+  const separator = otp.element.locator("input-otp-separator")
   const firstGroupEnd = (await otp.slot(2).boundingBox()).x
   const secondGroupStart = (await otp.slot(3).boundingBox()).x
   const separatorBox = await separator.boundingBox()

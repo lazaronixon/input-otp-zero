@@ -15,7 +15,7 @@ export class OtpHandle {
   }
 
   get slots() {
-    return this.element.locator("[data-input-otp-slot]")
+    return this.element.locator("input-otp-slot")
   }
 
   slot(index) {
@@ -23,7 +23,7 @@ export class OtpHandle {
   }
 
   get caret() {
-    return this.element.locator("[data-input-otp-caret][data-visible]")
+    return this.element.locator("input-otp-caret[data-visible]")
   }
 
   async focus() {
@@ -72,11 +72,11 @@ export class OtpHandle {
   }
 
   async chars() {
-    return this.slots.locator("[data-input-otp-char]").allTextContents()
+    return this.slots.locator("input-otp-char").allTextContents()
   }
 
   async activeIndexes() {
-    return this.page.$$eval(`${this.selector} [data-input-otp-slot]`, slots =>
+    return this.page.$$eval(`${this.selector} input-otp-slot`, slots =>
       slots.map((slot, index) => ({ slot, index }))
         .filter(({ slot }) => slot.hasAttribute("data-active"))
         .map(({ index }) => index))

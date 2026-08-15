@@ -10,7 +10,7 @@ describe("rendering", () => {
   test("renders one slot per character and an invisible input", () => {
     const element = mount("<input-otp maxlength=\"6\"></input-otp>")
 
-    expect(element.querySelectorAll("[data-input-otp-slot]")).toHaveLength(6)
+    expect(element.querySelectorAll("input-otp-slot")).toHaveLength(6)
     expect(element.input).toBeInstanceOf(HTMLInputElement)
     expect(element.input.maxLength).toBe(6)
     expect(element.input.hasAttribute("data-input-otp")).toBe(true)
@@ -20,15 +20,15 @@ describe("rendering", () => {
     const element = mount("<input-otp></input-otp>")
 
     expect(element.maxLength).toBe(6)
-    expect(element.querySelectorAll("[data-input-otp-slot]")).toHaveLength(6)
+    expect(element.querySelectorAll("input-otp-slot")).toHaveLength(6)
   })
 
   test("gives every slot a character and a caret element", () => {
     const element = mount("<input-otp maxlength=\"2\"></input-otp>")
 
-    element.querySelectorAll("[data-input-otp-slot]").forEach(slot => {
-      expect(slot.querySelector("[data-input-otp-char]")).not.toBeNull()
-      expect(slot.querySelector("[data-input-otp-caret]")).not.toBeNull()
+    element.querySelectorAll("input-otp-slot").forEach(slot => {
+      expect(slot.querySelector("input-otp-char")).not.toBeNull()
+      expect(slot.querySelector("input-otp-caret")).not.toBeNull()
     })
   })
 
@@ -42,29 +42,30 @@ describe("rendering", () => {
   test("adopts hand-written slot markup instead of generating its own", () => {
     const element = mount(`
       <input-otp>
-        <div data-input-otp-group>
-          <div data-input-otp-slot class="mine"></div>
-          <div data-input-otp-slot class="mine"></div>
-        </div>
-        <div data-input-otp-separator></div>
-        <div data-input-otp-group>
-          <div data-input-otp-slot class="mine"></div>
-          <div data-input-otp-slot class="mine"></div>
-        </div>
+        <input-otp-group>
+          <input-otp-slot class="mine"></input-otp-slot>
+          <input-otp-slot class="mine"></input-otp-slot>
+        </input-otp-group>
+        <input-otp-separator></input-otp-separator>
+        <input-otp-group>
+          <input-otp-slot class="mine"></input-otp-slot>
+          <input-otp-slot class="mine"></input-otp-slot>
+        </input-otp-group>
       </input-otp>
     `)
 
-    const slots = element.querySelectorAll("[data-input-otp-slot]")
+    const slots = element.querySelectorAll("input-otp-slot")
     expect(slots).toHaveLength(4)
     expect(element.maxLength).toBe(4)
-    expect(element.querySelector("[data-input-otp-slots]")).toBeNull()
+    // The two groups are the ones written above — none was generated.
+    expect(element.querySelectorAll("input-otp-group")).toHaveLength(2)
     slots.forEach(slot => expect(slot.classList.contains("mine")).toBe(true))
   })
 
   test("warns when maxlength disagrees with the provided slots", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
 
-    mount("<input-otp maxlength=\"6\"><div data-input-otp-slot></div></input-otp>")
+    mount("<input-otp maxlength=\"6\"><input-otp-slot></input-otp-slot></input-otp>")
 
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("maxlength is 6 but 1 slots were provided"))
     warn.mockRestore()
@@ -76,7 +77,7 @@ describe("rendering", () => {
 
     element.setAttribute("maxlength", "2")
 
-    expect(element.querySelectorAll("[data-input-otp-slot]")).toHaveLength(2)
+    expect(element.querySelectorAll("input-otp-slot")).toHaveLength(2)
     expect(element.value).toBe("12")
     expect(element.input.maxLength).toBe(2)
   })
@@ -142,6 +143,52 @@ describe("attributes", () => {
   })
 })
 
+describe("parts", () => {
+  test("registers every part as its own element", () => {
+    [ "input-otp", "input-otp-group", "input-otp-slot", "input-otp-char", "input-otp-caret", "input-otp-separator" ]
+      .forEach(name => expect(customElements.get(name)).toBeTypeOf("function"))
+  })
+
+  test("upgrades hand-written slots so they can paint themselves", () => {
+    const element = mount("<input-otp><input-otp-slot></input-otp-slot><input-otp-slot></input-otp-slot></input-otp>")
+
+    element.querySelectorAll("input-otp-slot").forEach(slot => {
+      expect(slot).toBeInstanceOf(customElements.get("input-otp-slot"))
+      expect(slot.update).toBeTypeOf("function")
+    })
+  })
+
+  test("a slot builds its own character and caret", () => {
+    const element = mount("<input-otp maxlength=\"1\"></input-otp>")
+    const slot = element.querySelector("input-otp-slot")
+
+    expect(slot.char.tagName.toLowerCase()).toBe("input-otp-char")
+    expect(slot.caret.tagName.toLowerCase()).toBe("input-otp-caret")
+    expect(slot.char.getAttribute("aria-hidden")).toBe("true")
+    expect(slot.caret.getAttribute("aria-hidden")).toBe("true")
+  })
+
+  test("a slot paints itself from a state object", () => {
+    const element = mount("<input-otp maxlength=\"1\"></input-otp>")
+    const slot = element.querySelector("input-otp-slot")
+
+    slot.update({ char: "7", placeholderChar: null, isActive: true, hasFakeCaret: false })
+
+    expect(slot.char.textContent).toBe("7")
+    expect(slot.hasAttribute("data-active")).toBe(true)
+    expect(slot.hasAttribute("data-filled")).toBe(true)
+    expect(slot.caret.hasAttribute("data-visible")).toBe(false)
+  })
+
+  test("generates a group around the slots it renders itself", () => {
+    const element = mount("<input-otp maxlength=\"3\"></input-otp>")
+    const group = element.querySelector("input-otp-group")
+
+    expect(group.children).toHaveLength(3)
+    expect(Array.from(group.children).every(slot => slot.matches("input-otp-slot"))).toBe(true)
+  })
+})
+
 describe("custom painting", () => {
   test("hands each slot to renderSlot instead of painting it", () => {
     document.body.innerHTML = "<input-otp maxlength=\"3\"></input-otp>"
@@ -153,7 +200,7 @@ describe("custom painting", () => {
 
     element.value = "12"
 
-    const slots = Array.from(element.querySelectorAll("[data-input-otp-slot]"))
+    const slots = Array.from(element.querySelectorAll("input-otp-slot"))
     expect(slots.map(slot => slot.textContent)).toEqual([ "1", "2", "." ])
   })
 
@@ -493,7 +540,7 @@ describe("lifecycle", () => {
     host.appendChild(element)
 
     expect(element.value).toBe("12")
-    expect(element.querySelectorAll("[data-input-otp-slot]")).toHaveLength(4)
+    expect(element.querySelectorAll("input-otp-slot")).toHaveLength(4)
   })
 
   test("installs its stylesheet exactly once", () => {

@@ -60,11 +60,11 @@ export function paste(element, text) {
 }
 
 export function slotState(element) {
-  return Array.from(element.querySelectorAll("[data-input-otp-slot]")).map(slot => ({
-    char: slot.querySelector("[data-input-otp-char]").textContent,
+  return Array.from(element.querySelectorAll("input-otp-slot")).map(slot => ({
+    char: slot.querySelector("input-otp-char").textContent,
     isActive: slot.hasAttribute("data-active"),
     isFilled: slot.hasAttribute("data-filled"),
     isPlaceholder: slot.hasAttribute("data-placeholder"),
-    hasCaret: slot.querySelector("[data-input-otp-caret]").hasAttribute("data-visible")
+    hasCaret: slot.querySelector("input-otp-caret").hasAttribute("data-visible")
   }))
 }

@@ -1,5 +1,8 @@
+const SLOT_TAG = "input-otp-slot"
+const GROUP_TAG = "input-otp-group"
+
 // Slots live in the light DOM so they can be styled and composed by hand. When
-// the host already contains `[data-input-otp-slot]` elements — grouped, with
+// the component already contains `<input-otp-slot>` elements — grouped, with
 // separators, with whatever classes — those are adopted as-is and only their
 // state is painted. Otherwise a flat row is generated.
 export default class SlotRenderer {
@@ -8,7 +11,7 @@ export default class SlotRenderer {
   #element
   #input
   #slots = []
-  #generatedContainer = null
+  #generatedGroup = null
 
   constructor(element, input) {
     this.#element = element
@@ -17,13 +20,15 @@ export default class SlotRenderer {
   }
 
   build(maxLength) {
+    // A slot paints itself, so it has to be upgraded before it is used, and the
+    // order the parser reaches the two definitions does not guarantee that.
+    customElements.upgrade(this.#element)
+
     if (this.providedCount > 0) {
       this.#slots = this.#findProvided()
     } else {
       this.#generate(maxLength)
     }
-
-    this.#slots.forEach(slot => this.#prepare(slot))
   }
 
   update(states, renderSlot) {
@@ -34,7 +39,7 @@ export default class SlotRenderer {
       if (renderSlot) {
         renderSlot(slot, state)
       } else {
-        this.#paint(slot, state)
+        slot.update(state)
       }
     })
   }
@@ -44,68 +49,16 @@ export default class SlotRenderer {
   }
 
   #findProvided() {
-    return Array.from(this.#element.querySelectorAll("[data-input-otp-slot]"))
+    return Array.from(this.#element.querySelectorAll(SLOT_TAG))
   }
 
   #generate(maxLength) {
-    this.#generatedContainer?.remove()
+    this.#generatedGroup?.remove()
 
-    const container = document.createElement("div")
-    container.setAttribute("data-input-otp-slots", "")
+    const group = document.createElement(GROUP_TAG)
+    this.#slots = Array.from({ length: maxLength }, () => group.appendChild(document.createElement(SLOT_TAG)))
 
-    this.#slots = Array.from({ length: maxLength }, () => {
-      const slot = document.createElement("div")
-      slot.setAttribute("data-input-otp-slot", "")
-      container.appendChild(slot)
-      return slot
-    })
-
-    this.#element.insertBefore(container, this.#input)
-    this.#generatedContainer = container
-  }
-
-  // Both children are guaranteed here rather than in `#generate` so that
-  // hand-written slot markup gets them too without having to spell them out.
-  #prepare(slot) {
-    if (!slot.querySelector("[data-input-otp-char]")) {
-      const char = document.createElement("span")
-      char.setAttribute("data-input-otp-char", "")
-      char.setAttribute("aria-hidden", "true")
-      slot.appendChild(char)
-    }
-
-    if (!slot.querySelector("[data-input-otp-caret]")) {
-      const caret = document.createElement("span")
-      caret.setAttribute("data-input-otp-caret", "")
-      caret.setAttribute("aria-hidden", "true")
-      slot.appendChild(caret)
-    }
-  }
-
-  #paint(slot, state) {
-    const char = slot.querySelector("[data-input-otp-char]")
-    const caret = slot.querySelector("[data-input-otp-caret]")
-
-    let text = ""
-    if (state.char !== null) {
-      text = state.char
-    } else if (state.placeholderChar !== null) {
-      text = state.placeholderChar
-    }
-
-    if (char.textContent !== text) char.textContent = text
-
-    toggle(slot, "data-active", state.isActive)
-    toggle(slot, "data-filled", state.char !== null)
-    toggle(slot, "data-placeholder", state.char === null && state.placeholderChar !== null)
-    toggle(caret, "data-visible", state.hasFakeCaret)
-  }
-}
-
-function toggle(element, attribute, present) {
-  if (present) {
-    element.setAttribute(attribute, "")
-  } else {
-    element.removeAttribute(attribute)
+    this.#element.insertBefore(group, this.#input)
+    this.#generatedGroup = group
   }
 }

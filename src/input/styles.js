@@ -12,7 +12,7 @@ input-otp { position: relative; display: inline-flex; align-items: center; curso
 
 input-otp[disabled] { cursor: default; }
 
-input-otp [data-input-otp-slot] { position: relative; }
+input-otp input-otp-slot { position: relative; }
 
 /* The real input covers the whole component, transparent in every way a browser
    can paint it, and is the only thing that receives pointer events. */
