@@ -41,16 +41,24 @@ Two tags. No build step, no bundler, nothing to install.
 
 ```html
 <link rel="stylesheet" href="https://esm.sh/input-otp-zero/dist/input-otp-zero.css">
-<script type="module" src="https://esm.sh/input-otp-zero"></script>
+<script type="module">
+  import { defineElements } from "https://esm.sh/input-otp-zero"
+  defineElements()
+</script>
 ```
 
 Pin a version for production — `https://esm.sh/input-otp-zero@0.1.0` — so a
 release can't change under you.
 
-The script defines `<input-otp>` and injects the rules that make one text field
-behave like six boxes — that part is machinery, and it is never optional. The
-theme is the stylesheet: link it, paste it into a `<style>` tag, or fold it into
-your own. It is plain CSS.
+Importing the library registers nothing on its own; `defineElements()` defines
+`<input-otp>` and its parts, and you decide when that happens. Call it once —
+a second call is a no-op, and any element name a page has already defined itself
+is left alone.
+
+Upgrading also injects the rules that make one text field behave like six boxes
+— that part is machinery, and it is never optional. The theme is the stylesheet:
+link it, paste it into a `<style>` tag, or fold it into your own. It is plain
+CSS.
 
 The machinery's `<style>` tag goes first in `<head>`, so both the theme and your
 own CSS come later in the cascade and win a specificity tie — you never have to
@@ -282,6 +290,11 @@ import {
 The part classes — `InputOtpGroupElement`, `InputOtpCharElement`,
 `InputOtpCaretElement` and `InputOtpSeparatorElement` — are exported too, though
 you rarely need them.
+
+`defineElements()` is the only export with an effect: the import itself touches
+nothing, so a page that never calls it keeps its plain `<input>`. Define an
+element name yourself before calling it — `customElements.define("input-otp-slot",
+MySlotElement)` — and that name is left as you defined it.
 
 ## Development
 

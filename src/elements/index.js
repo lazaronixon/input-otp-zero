@@ -14,6 +14,9 @@ const ELEMENTS = {
   "input-otp": InputOtpElement
 }
 
+// Importing the library registers nothing; a page calls this when it wants the
+// elements to upgrade. Defining a name twice throws, so an already-defined one
+// is left alone and calling this more than once is harmless.
 export function defineElements() {
   Object.entries(ELEMENTS).forEach(([ name, element ]) => {
     if (!customElements.get(name)) customElements.define(name, element)
