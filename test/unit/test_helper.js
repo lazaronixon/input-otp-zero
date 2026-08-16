@@ -1,6 +1,4 @@
-import { defineElements } from "input-otp-zero"
-
-defineElements()
+import "input-otp-zero"
 
 // jsdom does not implement ResizeObserver, and the component treats it as
 // optional, but stubbing it keeps the tested path identical to a browser's.
