@@ -34,6 +34,12 @@ export class OtpHandle {
     await this.input.pressSequentially(text, { delay: 10 })
   }
 
+  // Faster than the component's own selection timers, which is where dropped
+  // keystrokes used to come from.
+  async typeInstantly(text) {
+    await this.input.pressSequentially(text, { delay: 0 })
+  }
+
   async press(key) {
     await this.input.press(key)
   }

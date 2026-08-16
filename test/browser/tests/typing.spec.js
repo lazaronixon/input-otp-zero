@@ -43,6 +43,20 @@ test("overwrites the last slot once every slot is filled", async ({ otp }) => {
   expect(await otp.chars()).toEqual([ "1", "2", "3", "4", "5", "9" ])
 })
 
+// A full field leaves the caret collapsed past the last slot, where the input
+// is already at its maxlength and the browser drops what you type. The
+// selection has to be widened back onto a slot as part of the change itself —
+// doing it from a timer means fast typing loses characters.
+test("keeps up with typing faster than its own timers", async ({ otp }) => {
+  await otp.focus()
+  await otp.type("123456")
+  await otp.expectActive([ 5 ])
+
+  await otp.typeInstantly("789")
+
+  await otp.expectValue("123459")
+})
+
 test("rejects characters that break the pattern", async ({ otp }) => {
   await otp.focus()
   await otp.type("12")
