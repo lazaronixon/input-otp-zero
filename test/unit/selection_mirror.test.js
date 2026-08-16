@@ -78,6 +78,22 @@ describe("widening a caret onto a slot", () => {
 
     expect(range()).toEqual([ 0, 0 ])
   })
+
+  // There is no neighbouring slot to step onto, so the caret is left as it is.
+  test("leaves a caret alone in a single-slot field", () => {
+    observe({ value: "1", maxLength: 1, start: 1 })
+
+    expect(range()).toEqual([ 0, 1 ])
+  })
+
+  test("leaves a caret alone in a single-character value", () => {
+    observe({ value: "12", maxLength: 6, start: 2 })
+    input.value = "1"
+
+    moveCaretTo(1)
+
+    expect(range()).toEqual([ 1, 1 ])
+  })
 })
 
 describe("inferring direction", () => {
