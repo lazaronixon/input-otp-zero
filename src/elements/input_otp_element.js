@@ -360,6 +360,13 @@ export default class InputOtpElement extends HTMLElement {
     const previousValue = this.#previousValue
     this.#previousValue = newValue
 
+    // A full field leaves the caret collapsed past the last slot, and the input
+    // is at its maxlength there — so every further keystroke is dropped by the
+    // browser until the selection is widened back onto a slot. The scheduled
+    // syncs below do that too, but they are a timer: typing faster than they
+    // fire would swallow characters.
+    this.#selection.sync()
+
     this.#render()
     this.dispatchEvent(new CustomEvent("input-otp:change", { detail: { value: newValue }, bubbles: true }))
 

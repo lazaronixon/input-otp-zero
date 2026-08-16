@@ -41,6 +41,16 @@ test("reports completion again after the value drops below full", async ({ otp }
   await otp.expectEvents("complete", [ "123456", "123459" ])
 })
 
+test("lets the completion handler lock the field", async ({ otp, page }) => {
+  await page.goto("/complete.html")
+
+  await otp.focus()
+  await otp.type("123456")
+
+  await expect(otp.element).toHaveAttribute("data-disabled", "")
+  await expect(otp.input).toBeDisabled()
+})
+
 test("emits native input events so plain form code keeps working", async ({ otp, page }) => {
   await page.evaluate(() => {
     globalThis.nativeInputs = []

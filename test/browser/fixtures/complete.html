@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>input-otp-zero — complete handler</title>
+    <link rel="stylesheet" href="/input-otp-zero.css">
+    <script type="module" src="/setup.js"></script>
+    <script type="module">
+      // Locking the field while the code is verified is the usual thing to do
+      // from this event.
+      document.querySelector("input-otp").addEventListener("input-otp:complete", event => {
+        event.target.disabled = true
+      })
+    </script>
+  </head>
+  <body>
+    <input-otp maxlength="6" pattern="digits"></input-otp>
+  </body>
+</html>
