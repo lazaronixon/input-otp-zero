@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest"
 import { backspace, mount, paste, setSelection, slotState, type, unmount } from "./test_helper"
-import { defineElements } from "input-otp-zero"
+import { defineElements } from "src/elements/index"
 
 afterEach(() => {
   unmount()

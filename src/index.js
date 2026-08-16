@@ -1,6 +1,3 @@
-export { default as InputOtpElement } from "./elements/input_otp_element"
-export { default as InputOtpSlotElement } from "./elements/input_otp_slot"
-export { InputOtpCaretElement, InputOtpCharElement, InputOtpGroupElement, InputOtpSeparatorElement } from "./elements/parts"
-export { computeSlots } from "./input/slots"
-export { REGEXP_ONLY_CHARS, REGEXP_ONLY_DIGITS, REGEXP_ONLY_DIGITS_AND_CHARS, resolvePattern } from "./patterns"
-export { defineElements } from "./elements/index"
+import { defineElements } from "./elements/index"
+
+defineElements()
