@@ -100,6 +100,44 @@ test("keeps a bare caret at the append position", async ({ otp }) => {
   await otp.expectActive([ 2 ])
 })
 
+// A half-filled field parks a bare caret past the last character. Stepping back
+// out of that has to select the character the caret sits after, not shift a
+// whole slot further left.
+test("selects the previous character when leaving insert mode", async ({ otp }) => {
+  await otp.focus()
+  await otp.type("123")
+  await otp.expectSelection(3, 3)
+
+  await otp.press("ArrowLeft")
+  await otp.expectSelection(2, 3)
+
+  await otp.press("ArrowLeft")
+  await otp.expectSelection(1, 2)
+})
+
+test("replaces the selected character when typing", async ({ otp }) => {
+  await otp.focus()
+  await otp.type("123")
+  await otp.press("ArrowLeft")
+  await otp.expectActive([ 2 ])
+
+  await otp.type("1")
+
+  await otp.expectValue("121")
+})
+
+test("replaces a whole shift-selected range when typing", async ({ otp }) => {
+  await otp.focus()
+  await otp.type("123456")
+  await otp.press("Shift+ArrowLeft")
+  await otp.press("Shift+ArrowLeft")
+  await otp.expectActive([ 3, 4, 5 ])
+
+  await otp.type("1")
+
+  await otp.expectValue("1231")
+})
+
 test("overwrites the slot the caret sits on", async ({ otp }) => {
   await otp.focus()
   await otp.type("123456")

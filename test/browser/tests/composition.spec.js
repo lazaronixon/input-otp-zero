@@ -51,6 +51,15 @@ test("shows placeholder characters until the first keystroke", async ({ page, ot
   expect(await otp.chars()).toEqual([ "1", "", "", "" ])
 })
 
+// `autofocus` only acts on elements the parser already knows about, and the
+// inner input is created too late for that — so the component does it itself.
+test("takes focus on load with autofocus", async ({ page, otp }) => {
+  await page.goto("/autofocus.html")
+
+  await expect(otp.input).toBeFocused()
+  await expect(otp.element).toHaveAttribute("data-focused", "")
+})
+
 test("is reachable and operable with the keyboard alone", async ({ page, otp }) => {
   await page.goto("/form.html")
 

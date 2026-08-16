@@ -72,6 +72,46 @@ test("clears the whole value with select-all then Backspace", async ({ otp }) =>
   expect(await otp.chars()).toEqual([ "", "", "", "", "", "" ])
 })
 
+// Meta+Backspace deletes to the start of the line on macOS and Control+Backspace
+// deletes the previous word elsewhere. The whole code is one word either way.
+test("deletes the whole code with a word-delete", async ({ otp }) => {
+  await otp.focus()
+  await otp.type("1234")
+
+  await otp.press("ControlOrMeta+Backspace")
+
+  await otp.expectValue("")
+})
+
+test("deletes only the selected character with a word-delete", async ({ otp }) => {
+  await otp.focus()
+  await otp.type("123456")
+  await otp.setSelection(3, 4)
+
+  await otp.press("ControlOrMeta+Backspace")
+
+  await otp.expectValue("12356")
+})
+
+// A full field leaves the last slot selected, so Delete removes the character
+// under it rather than doing nothing at the end of the text.
+test("forward-deletes the selected slot with Delete", async ({ otp }) => {
+  await otp.focus()
+  await otp.type("123456")
+  await otp.expectSelection(5, 6)
+
+  await otp.press("Delete")
+  await otp.expectValue("12345")
+
+  await otp.setSelection(0, 1)
+  await otp.press("Delete")
+  await otp.expectValue("2345")
+
+  await otp.setSelection(2, 3)
+  await otp.press("Delete")
+  await otp.expectValue("235")
+})
+
 test("marks the host as focused, complete and empty", async ({ otp }) => {
   await expect(otp.element).toHaveAttribute("data-empty", "")
   await expect(otp.element).not.toHaveAttribute("data-focused", "")
@@ -82,6 +122,16 @@ test("marks the host as focused, complete and empty", async ({ otp }) => {
   await otp.type("123456")
   await expect(otp.element).toHaveAttribute("data-complete", "")
   await expect(otp.element).not.toHaveAttribute("data-empty", "")
+})
+
+// The invisible input covers the component and is the only part of it that
+// takes pointer events, so hovering the component hovers the input.
+test("marks the host as hovering under the pointer", async ({ otp }) => {
+  await expect(otp.element).not.toHaveAttribute("data-hovering", "")
+
+  await otp.hover()
+
+  await expect(otp.element).toHaveAttribute("data-hovering", "")
 })
 
 test("deactivates every slot on blur", async ({ otp }) => {

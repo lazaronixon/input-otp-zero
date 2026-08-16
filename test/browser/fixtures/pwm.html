@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>input-otp-zero — password manager badge</title>
+    <link rel="stylesheet" href="/input-otp-zero.css">
+    <script type="module" src="/setup.js"></script>
+    <style>
+      /* Nothing constrains the gutter here, so the 40px fits. */
+      .roomy {
+        padding: 8px;
+      }
+
+      /* Shrink-wrapped around the component and scrollable, so there is no room
+         to the right of the last slot — widening the input here would turn into
+         scrollable overflow and shift the layout. */
+      .tight {
+        width: fit-content;
+        overflow-x: auto;
+        padding: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="roomy">
+      <input-otp id="roomy" maxlength="6" pattern="digits"></input-otp>
+    </div>
+
+    <div class="tight" id="tight-card">
+      <input-otp id="tight" maxlength="6" pattern="digits"></input-otp>
+    </div>
+  </body>
+</html>

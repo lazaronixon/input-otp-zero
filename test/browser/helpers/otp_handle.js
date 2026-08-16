@@ -67,6 +67,23 @@ export class OtpHandle {
     }, text)
   }
 
+  // A range is mirrored as the user drew it, so this settles on exactly what it
+  // was given. WebKit does not always fire `selectionchange` for a programmatic
+  // change, hence dispatching it by hand.
+  async setSelection(start, end) {
+    await this.input.evaluate((input, [ from, to ]) => {
+      input.setSelectionRange(from, to)
+      document.dispatchEvent(new Event("selectionchange"))
+    }, [ start, end ])
+
+    await this.expectSelection(start, end)
+  }
+
+  async hover() {
+    const box = await this.element.boundingBox()
+    await this.page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+  }
+
   async value() {
     return this.input.inputValue()
   }

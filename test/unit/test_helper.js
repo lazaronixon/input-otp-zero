@@ -61,6 +61,17 @@ export function paste(element, text) {
   return event
 }
 
+// jsdom has no layout, so geometry the browser would compute — `offsetX` on a
+// pointer event, say — has to be attached by hand.
+export function eventWith(type, properties) {
+  const event = new Event(type, { bubbles: true, cancelable: true })
+  Object.entries(properties).forEach(([ name, value ]) => {
+    Object.defineProperty(event, name, { value })
+  })
+
+  return event
+}
+
 export function slotState(element) {
   return Array.from(element.querySelectorAll("input-otp-slot")).map(slot => ({
     char: slot.querySelector("input-otp-char").textContent,
