@@ -145,36 +145,36 @@ container, or on a single element:
 }
 ```
 
-| Property | Default | |
-| --- | --- | --- |
-| `--input-otp-gap` | `0.5rem` | space between slots |
-| `--input-otp-group-gap` | `0.75rem` | space between groups and separators |
-| `--input-otp-slot-width` | `2.75rem` | |
-| `--input-otp-slot-height` | `3.5rem` | |
-| `--input-otp-slot-radius` | `0.5rem` | |
-| `--input-otp-slot-background` | `#ffffff` | |
-| `--input-otp-slot-background-active` | `#ffffff` | |
-| `--input-otp-border-width` | `1px` | |
-| `--input-otp-border-color` | `#d4d4d8` | |
-| `--input-otp-border-color-active` | `#18181b` | the slot being edited |
-| `--input-otp-ring-width` | `2px` | focus ring around the active slot |
-| `--input-otp-ring-color` | `rgb(24 24 27 / 0.75)` | |
-| `--input-otp-ring-offset` | `0px` | |
-| `--input-otp-color` | `#18181b` | |
-| `--input-otp-placeholder-color` | `#a1a1aa` | |
-| `--input-otp-font-family` | `ui-monospace, …` | |
-| `--input-otp-font-size` | `1.375rem` | |
-| `--input-otp-font-weight` | `500` | |
-| `--input-otp-caret-color` | `#18181b` | |
-| `--input-otp-caret-width` | `1px` | |
-| `--input-otp-caret-height` | `2rem` | |
-| `--input-otp-caret-blink-duration` | `1s` | |
-| `--input-otp-separator-color` | `#a1a1aa` | |
-| `--input-otp-separator-width` | `1.5rem` | |
-| `--input-otp-separator-thickness` | `2px` | the Stripe-style dash |
-| `--input-otp-transition-duration` | `150ms` | |
-| `--input-otp-transition-easing` | `ease-out` | |
-| `--input-otp-disabled-opacity` | `0.5` | |
+| Property | Default |
+| --- | --- |
+| `--input-otp-gap` | `0.5rem` |
+| `--input-otp-group-gap` | `0.75rem` |
+| `--input-otp-slot-width` | `2.75rem` |
+| `--input-otp-slot-height` | `3.5rem` |
+| `--input-otp-slot-radius` | `0.5rem` |
+| `--input-otp-slot-background` | `#ffffff` |
+| `--input-otp-slot-background-active` | `#ffffff` |
+| `--input-otp-border-width` | `1px` |
+| `--input-otp-border-color` | `#d4d4d8` |
+| `--input-otp-border-color-active` | `#18181b` |
+| `--input-otp-ring-width` | `2px` |
+| `--input-otp-ring-color` | `rgb(24 24 27 / 0.75)` |
+| `--input-otp-ring-offset` | `0px` |
+| `--input-otp-color` | `#18181b` |
+| `--input-otp-placeholder-color` | `#a1a1aa` |
+| `--input-otp-font-family` | `ui-monospace, …` |
+| `--input-otp-font-size` | `1.375rem` |
+| `--input-otp-font-weight` | `500` |
+| `--input-otp-caret-color` | `#18181b` |
+| `--input-otp-caret-width` | `1px` |
+| `--input-otp-caret-height` | `2rem` |
+| `--input-otp-caret-blink-duration` | `1s` |
+| `--input-otp-separator-color` | `#a1a1aa` |
+| `--input-otp-separator-width` | `1.5rem` |
+| `--input-otp-separator-thickness` | `2px` |
+| `--input-otp-transition-duration` | `150ms` |
+| `--input-otp-transition-easing` | `ease-out` |
+| `--input-otp-disabled-opacity` | `0.5` |
 
 The theme follows `prefers-color-scheme` and also honours
 `<html data-theme="dark">` / `data-theme="light"`.
