@@ -11,6 +11,11 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     include: [ "test/unit/**/*.test.js" ],
-    exclude: [ "**/browser/**", "**/node_modules/**" ]
+    exclude: [ "**/browser/**", "**/node_modules/**" ],
+    coverage: {
+      include: [ "src/**" ],
+      reporter: [ "text", "html" ],
+      reportsDirectory: "coverage"
+    }
   }
 })

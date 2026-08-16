@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest"
 import { backspace, mount, paste, setSelection, slotState, type, unmount } from "./test_helper"
+import { defineElements } from "input-otp-zero"
 
 afterEach(() => {
   unmount()
@@ -141,6 +142,67 @@ describe("attributes", () => {
 
     expect(document.activeElement).toBe(element.input)
   })
+
+  // The properties are the scripting face of the attributes, so setting one has
+  // to go back through the attribute the component actually reads.
+  test("the properties write through to the attributes", () => {
+    const element = mount("<input-otp maxlength=\"4\"></input-otp>")
+
+    element.maxLength = 3
+    element.pattern = "digits"
+    element.placeholder = "abc"
+    element.disabled = true
+
+    expect(element.getAttribute("maxlength")).toBe("3")
+    expect(element.getAttribute("pattern")).toBe("digits")
+    expect(element.getAttribute("placeholder")).toBe("abc")
+    expect(element.hasAttribute("disabled")).toBe(true)
+  })
+
+  test("setting disabled to false removes the attribute", () => {
+    const element = mount("<input-otp disabled></input-otp>")
+
+    element.disabled = false
+
+    expect(element.hasAttribute("disabled")).toBe(false)
+    expect(element.input.disabled).toBe(false)
+  })
+
+  test("falls back to six slots when maxlength is not a usable number", () => {
+    expect(mount("<input-otp maxlength=\"0\"></input-otp>").maxLength).toBe(6)
+    unmount()
+    expect(mount("<input-otp maxlength=\"-2\"></input-otp>").maxLength).toBe(6)
+    unmount()
+    expect(mount("<input-otp maxlength=\"abc\"></input-otp>").maxLength).toBe(6)
+  })
+
+  test("rounds a fractional maxlength down to whole slots", () => {
+    const element = mount("<input-otp maxlength=\"3.7\"></input-otp>")
+
+    expect(element.maxLength).toBe(3)
+    expect(element.querySelectorAll("input-otp-slot")).toHaveLength(3)
+  })
+})
+
+describe("hover", () => {
+  test("flags the host while the pointer is over it", () => {
+    const element = mount("<input-otp maxlength=\"4\"></input-otp>")
+
+    element.input.dispatchEvent(new Event("mouseover"))
+    expect(element.hasAttribute("data-hovering")).toBe(true)
+
+    element.input.dispatchEvent(new Event("mouseleave"))
+    expect(element.hasAttribute("data-hovering")).toBe(false)
+  })
+
+  // A disabled field is not interactive, so there is nothing to signal.
+  test("never flags a disabled field", () => {
+    const element = mount("<input-otp maxlength=\"4\" disabled></input-otp>")
+
+    element.input.dispatchEvent(new Event("mouseover"))
+
+    expect(element.hasAttribute("data-hovering")).toBe(false)
+  })
 })
 
 describe("parts", () => {
@@ -178,6 +240,25 @@ describe("parts", () => {
     expect(slot.hasAttribute("data-active")).toBe(true)
     expect(slot.hasAttribute("data-filled")).toBe(true)
     expect(slot.caret.hasAttribute("data-visible")).toBe(false)
+  })
+
+  // The parts are created on demand so an empty `<input-otp-slot>` is all
+  // anyone has to write — but a hand-written one is kept and painted in place.
+  test("a slot keeps the character element you wrote yourself", () => {
+    const element = mount(`
+      <input-otp>
+        <input-otp-slot>
+          <input-otp-char class="mine"></input-otp-char>
+        </input-otp-slot>
+      </input-otp>
+    `)
+    const slot = element.querySelector("input-otp-slot")
+
+    element.value = "7"
+
+    expect(slot.querySelectorAll("input-otp-char")).toHaveLength(1)
+    expect(slot.char.classList.contains("mine")).toBe(true)
+    expect(slot.char.textContent).toBe("7")
   })
 
   test("generates a group around the slots it renders itself", () => {
@@ -260,6 +341,44 @@ describe("value", () => {
 
     expect(element.isComplete).toBe(true)
     expect(element.hasAttribute("data-complete")).toBe(true)
+  })
+
+  test("removing the value attribute empties the field", () => {
+    const element = mount("<input-otp maxlength=\"4\" value=\"1234\"></input-otp>")
+
+    element.removeAttribute("value")
+
+    expect(element.value).toBe("")
+  })
+
+  test("treats an emptied value as an empty string", () => {
+    const element = mount("<input-otp maxlength=\"4\" value=\"1234\"></input-otp>")
+
+    element.value = null
+
+    expect(element.value).toBe("")
+  })
+
+  test("setting the value it already has changes nothing", () => {
+    const element = mount("<input-otp maxlength=\"4\" value=\"12\"></input-otp>")
+    const changed = vi.fn()
+    element.addEventListener("input-otp:change", changed)
+
+    element.value = "12"
+
+    expect(changed).not.toHaveBeenCalled()
+  })
+
+  // Before the element upgrades there is no input to hold the value, so the
+  // attribute stands in for it — that is what makes a server-rendered value work.
+  test("falls back to the attribute before it has an input", () => {
+    const element = document.createElement("input-otp")
+    element.setAttribute("value", "99")
+
+    expect(element.value).toBe("99")
+
+    element.value = "88"
+    expect(element.getAttribute("value")).toBe("88")
   })
 
   test("shows placeholder characters until the first character is typed", () => {
@@ -513,6 +632,18 @@ describe("paste", () => {
     expect(element.value).toBe("")
   })
 
+  test("a transformed paste replaces the selected characters", () => {
+    const element = mount("<input-otp maxlength=\"6\" value=\"123456\"></input-otp>")
+    element.pasteTransformer = pasted => pasted.trim()
+    element.focus()
+    setSelection(element.input, 1, 3)
+
+    paste(element, "99")
+
+    // The two selected characters are gone, the rest is untouched.
+    expect(element.value).toBe("199456")
+  })
+
   test("leaves the browser to handle a paste when nothing needs transforming", () => {
     const element = mount("<input-otp maxlength=\"6\"></input-otp>")
     element.focus()
@@ -547,6 +678,109 @@ describe("lifecycle", () => {
     mount("<input-otp></input-otp><input-otp></input-otp>")
 
     expect(document.querySelectorAll("#input-otp-zero-style")).toHaveLength(1)
+  })
+
+  // The observer only feeds a CSS variable used for sizing, so an engine
+  // without it should still get a working field.
+  test("works in a browser without ResizeObserver", () => {
+    const observer = globalThis.ResizeObserver
+    delete globalThis.ResizeObserver
+
+    try {
+      const element = mount("<input-otp maxlength=\"3\"></input-otp>")
+
+      type(element, "12")
+      expect(element.value).toBe("12")
+      expect(element.querySelectorAll("input-otp-slot")).toHaveLength(3)
+    } finally {
+      globalThis.ResizeObserver = observer
+    }
+  })
+
+  test("defining the elements again leaves the existing ones alone", () => {
+    const slot = customElements.get("input-otp-slot")
+
+    defineElements()
+
+    expect(customElements.get("input-otp-slot")).toBe(slot)
+    expect(customElements.get("input-otp")).toBe(customElements.get("input-otp"))
+  })
+})
+
+describe("password manager badge", () => {
+  // A badge is injected asynchronously, so detection runs on a timer after
+  // focus, and the geometry it measures has to be supplied under jsdom.
+  function layOutWithRoomToTheRight(element) {
+    element.getBoundingClientRect = () => ({ left: 0, right: 300, top: 0, width: 300, height: 50, bottom: 50 })
+    Object.defineProperty(element, "offsetWidth", { value: 300, configurable: true })
+    Object.defineProperty(element, "offsetHeight", { value: 50, configurable: true })
+    Object.defineProperty(document.documentElement, "clientWidth", { value: 1000, configurable: true })
+    vi.spyOn(globalThis, "getComputedStyle").mockReturnValue({ overflowX: "visible" })
+    // Missing in jsdom. Answering with the component itself is what a corner
+    // with no badge over it looks like.
+    document.elementFromPoint = () => element
+  }
+
+  function plantBadge() {
+    const marker = document.createElement("div")
+    marker.setAttribute("data-lastpass-icon-root", "")
+    document.body.appendChild(marker)
+  }
+
+  test("widens the input behind a clip so the badge clears the last slot", () => {
+    vi.useFakeTimers()
+    const element = mount("<input-otp maxlength=\"6\"></input-otp>")
+    layOutWithRoomToTheRight(element)
+    plantBadge()
+
+    element.focus()
+    vi.advanceTimersByTime(0)
+
+    expect(element.input.style.width).toBe("calc(100% + 40px)")
+    expect(element.input.style.clipPath).toBe("inset(0 40px 0 0)")
+  })
+
+  test("leaves the input alone when nothing is pushing it", () => {
+    vi.useFakeTimers()
+    const element = mount("<input-otp maxlength=\"6\"></input-otp>")
+    layOutWithRoomToTheRight(element)
+
+    element.focus()
+    vi.advanceTimersByTime(6000)
+
+    expect(element.input.style.width).toBe("")
+    expect(element.input.style.clipPath).toBe("")
+  })
+
+  // The gutter is only borrowed while it fits — a validation message appearing
+  // beside the field can take the room away again.
+  test("gives the gutter back when the room disappears", () => {
+    vi.useFakeTimers()
+    const element = mount("<input-otp maxlength=\"6\"></input-otp>")
+    layOutWithRoomToTheRight(element)
+    plantBadge()
+    element.focus()
+    vi.advanceTimersByTime(0)
+    expect(element.input.style.width).toBe("calc(100% + 40px)")
+
+    Object.defineProperty(document.documentElement, "clientWidth", { value: 320, configurable: true })
+    vi.advanceTimersByTime(1000)
+
+    expect(element.input.style.width).toBe("")
+    expect(element.input.style.clipPath).toBe("")
+  })
+
+  test("stays out of the way when the strategy is none", () => {
+    vi.useFakeTimers()
+    const element = mount("<input-otp maxlength=\"6\" push-password-manager-strategy=\"none\"></input-otp>")
+    layOutWithRoomToTheRight(element)
+    plantBadge()
+
+    element.focus()
+    vi.advanceTimersByTime(6000)
+
+    expect(element.pushPasswordManagerStrategy).toBe("none")
+    expect(element.input.style.width).toBe("")
   })
 })
 

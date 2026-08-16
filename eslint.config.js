@@ -6,7 +6,7 @@ import js from "@eslint/js"
 
 export default defineConfig([
   {
-    ignores: [ "dist/**", "node_modules/**", "test/browser/playwright-report/**", "test/browser/test-results/**" ]
+    ignores: [ "coverage/**", "dist/**", "node_modules/**", "test/browser/playwright-report/**", "test/browser/test-results/**" ]
   },
   {
     files: [ "styles/**/*.css" ],

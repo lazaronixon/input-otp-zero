@@ -90,6 +90,16 @@ describe("hiding", () => {
     expect(textIndent()).toBe("")
   })
 
+  // iOS can swallow `pointerup` entirely when its own gesture recogniser takes
+  // over, so a cancelled gesture has to arm the backstop just the same.
+  test("hides on its own after a cancelled gesture", () => {
+    input.dispatchEvent(new Event("pointercancel"))
+
+    vi.advanceTimersByTime(5000)
+
+    expect(textIndent()).toBe("")
+  })
+
   test("hides on its own if the gesture is never finished", () => {
     input.dispatchEvent(new Event("pointerup"))
 
