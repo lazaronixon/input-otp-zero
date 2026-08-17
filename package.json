@@ -1,6 +1,6 @@
 {
   "name": "input-otp-zero",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "input-otp-zero - One invisible input, any UI you can imagine. A zero-dependency one-time-password custom element, themed with CSS variables.",
   "module": "dist/input-otp-zero.esm.js",
   "type": "module",
