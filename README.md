@@ -176,8 +176,8 @@ container, or on a single element:
 | `--input-otp-transition-easing` | `ease-out` |
 | `--input-otp-disabled-opacity` | `0.5` |
 
-The theme follows `prefers-color-scheme` and also honours
-`<html data-theme="dark">` / `data-theme="light"`.
+The theme ships one set of colours and does not react to `prefers-color-scheme`.
+Redefine the properties yourself for a dark palette.
 
 `appearance="seamless"` collapses the gaps into one continuous box with dividers
 between the slots.
